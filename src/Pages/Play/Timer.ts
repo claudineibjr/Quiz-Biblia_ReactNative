@@ -46,10 +46,11 @@ export default class Timer {
                 if (this.timeLeft === 0){
                     this.stopTimer(true);
                 }else{
+                    this.timeLeft -= 1;
+                    this.timerTickCallBack();
                     if (this.reactComponent)
                         this.reactComponent!.forceUpdate();
-                    this.timerTickCallBack();
-                    this.timeLeft -= 1;
+                    
                 }
             }
         }, 1000);

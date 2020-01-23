@@ -1,10 +1,8 @@
-/* eslint-disable prettier/prettier */
-
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
     questionTextContainer:{
-        width: '100%'
+        
     },
 
     questionText: {
@@ -22,6 +20,53 @@ const style = StyleSheet.create({
         fontSize: 14,
         textAlign: 'center',
         color: '#ffffff'
+    },
+
+    containerQuestionInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 10
+    },
+
+    containerAlternatives: {
+        marginTop: 10
+    },
+
+    timerText: {
+        fontSize: 18,
+        color: '#efefef'
+    },
+
+    powerUPButtons:{
+
+    },
+
+    itemPowerUPButton: {
+        color: '#efefef',
+        fontSize: 32,
+        paddingLeft: 6
+    },
+
+    correctAnswerIcon: {
+        fontSize: 60,
+        textAlign: 'center',
+        color: 'green',
+    },
+
+    incorretAnswerIcon: {
+        fontSize: 60,
+        textAlign: 'center',
+        color: 'red',
+    },
+
+    alertInfoTitle: {
+        fontSize: 22,
+        textAlign: 'center'
+    },
+
+    alertInfoMessage: {
+        marginTop: 4,
+        fontSize: 16
     }
 });
 

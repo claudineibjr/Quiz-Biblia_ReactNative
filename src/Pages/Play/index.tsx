@@ -8,10 +8,13 @@ import style from './styles';
 import { View, Text, Alert } from 'react-native';
 
 // NativeBase
-import {Container, Header, Body, Left, Right, Icon, Content, Card, CardItem, ListItem, Button, List} from 'native-base';
+import {Container, Header, Body, Left, Right, Content, Icon, Card, CardItem, ListItem, Button, List} from 'native-base';
+
+// Awesome Alert
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 // Model
-import Question, {QuestionFilter, QuestionDificulty, Testament} from '../../base/Model/Question';
+import Question, {QuestionFilter, QuestionDificulty, Testament, BibleSection} from '../../base/Model/Question';
 import User from '../../base/Model/User';
 import Bonus from '../../base/Model/UserBonus';
 import Timer from './Timer';
@@ -21,10 +24,11 @@ import QuestionDB from '../../base/Services/Firebase/CloudFirestore/QuestionDB';
 import QuestionServices from '../../base/Services/QuestionServices';
 
 // Components
-import QuestionComponent from '../../Components/QuestionComponent';
+import QuestionInfo from '../../Components/QuestionComponent/QuestionInfo';
 
 // Utilities
 import { shuffleAlternatives } from "../../Utilities/Util";
+import AlternativeItem from '../../Components/QuestionComponent/AlternativeItem';
 
 // Enums
 enum TypeBonus {
@@ -44,7 +48,8 @@ interface IState {
     question?: Question,
     timer: Timer,
     alertInfo: AlertInfo,
-    biblicalReference: AlertInfo
+    biblicalReference: AlertInfo,
+    try?: number
 }
 
 
@@ -69,19 +74,25 @@ export default class Play extends Component<IProps, IState>{
             question: undefined,
             timer: new Timer(this.timeToAnswerQuestion, this.timerEndTime, this.timerTimeTick, this, false),
             alertInfo: new AlertInfo(),
-            biblicalReference: new AlertInfo()
+            biblicalReference: new AlertInfo(),
+            try: undefined
         }
     }
 
     loadQuestion = () => {
         const questionFilter = new QuestionFilter(undefined, undefined, undefined)
         QuestionDB.getQuestion(this.state.user, questionFilter).then(question => {
-            console.log(question);
             this.state.timer.startTimer();
             this.setState({question: question});
         }).catch(error => {
             console.log(error);
         });
+
+        // Only for debug
+        /*this.setState({question: new Question('Complete a frase: O --- viverá pela fé. Nunca vi um --- mendigar o pão. Nem sua descendência perecer.', 0, ['justo', 'cristão que é chamado por Cristo para revelar as coisas de Jesus', 'Jesus', 'Diabo'], '\'O justo viverá pela fé\' Hc 2:4', QuestionDificulty.Easy, Testament.Velho, BibleSection.Profetas_Menores, 'Hc 2:4')},
+            () => {
+                this.state.timer.startTimer();
+            });*/
     }
 
     // #region Component LifeCycle
@@ -102,6 +113,8 @@ export default class Play extends Component<IProps, IState>{
 
     // #region Component Handlers
     try = async (answerIndex: number) => {
+        this.setState({try: answerIndex});
+
         // Pára com o timer
         this.state.timer.stopTimer();
         
@@ -110,11 +123,11 @@ export default class Play extends Component<IProps, IState>{
 
         // Calcula e identifica as informações que serão exibidas no alerta
         const score = QuestionServices.getPointsForQuestion(this.state.question!, correct, this.state.timer.timeLeft);
-        let alertTitle: string = correct ? 'Parabéns, você acertou!' : 'Que pena, você errou!';
-        alertTitle = alertTitle + ' ' + (correct ? '+' : '') + score + ' pontos';
+        const alertTitle: string = correct ? 'Parabéns, você acertou!' : 'Que pena, você errou!';
+        const messageScore = '  ' + (correct ? '+' : '') + score + ' pontos';
 
         // Espera alguns segundos e exibe o alerta com a resposta correta
-        new Timer(this.timeToShowAnswer, () => this.displayAlert(alertTitle, correct), () => {}, undefined, true);
+        new Timer(this.timeToShowAnswer, () => this.displayAlert(alertTitle, correct, messageScore), () => {}, undefined, true);
 
         this.matchTreatment(correct);
     }
@@ -134,11 +147,12 @@ export default class Play extends Component<IProps, IState>{
         }
     }
 
-    displayAlert = async (alertTitle: string, correct: boolean) => {
+    displayAlert = async (alertTitle: string, correct: boolean, messageScore: string) => {
         // Exibe o alerta com a resposta
         this.state.alertInfo.alertTitle = alertTitle;
         this.state.alertInfo.alertMessage = this.state.question!.getTextBiblical();
         this.state.alertInfo.alertType = correct ? 'success' : 'error';
+        this.state.alertInfo.score = messageScore;
         this.state.alertInfo.showAlert = true;
         this.forceUpdate();
     }
@@ -199,73 +213,106 @@ export default class Play extends Component<IProps, IState>{
 
     alternativesButtons = () => {
         const alternatives: Array<string> = this.state.question === undefined ? ['', '', '', ''] : this.state.question!.getAlternatives() as Array<string>;
-        const disabled = !this.state.timer.isOn;
+        const alreadyAnwered = !this.state.timer.isOn && this.state.timer.timeLeft !== this.state.timer.maxTime;
 
         return alternatives.map((alternativeText, index) =>
-            <ListItem>
-                <Button style={style.buttonAlternative}>
-                    <Text style={style.buttonAlternativeText}>
-                        {alternativeText}
-                    </Text>
-                </Button>
-            </ListItem>
+            <AlternativeItem
+                style={this.getStyleForAlternative(alreadyAnwered, index)}
+                onPress={() => this.try(index)} alternativeText={alternativeText}/>
         );
     }
 
+    getStyleForAlternative = (alreadyAnwered: boolean, index: number) => {
+        let styleForAlternative: any;
+        
+        const correctAlternative = {
+            backgroundColor: 'green'
+        };
+
+        const incorrectAlternative = {
+            backgroundColor: 'red'
+        };
+
+        const notAnsweredYet = {
+            backgroundColor: '#efefef',
+        };
+
+        if (alreadyAnwered){
+            const correctAnswer = index === this.state.question!.getAnswer();
+            const tried = index === this.state.try;
+
+            if (tried){
+                if (correctAnswer){
+                    styleForAlternative = correctAlternative;
+                }else{
+                    styleForAlternative = incorrectAlternative;
+                }
+            }else if (index === -1){
+                styleForAlternative = incorrectAlternative;
+            }else if (correctAnswer){
+                styleForAlternative = correctAlternative;
+            }else{
+                styleForAlternative = notAnsweredYet;
+            }
+        }else{
+            styleForAlternative = notAnsweredYet;
+        }
+
+        return styleForAlternative;
+    }
+
     render(){
+        const alternativesButtons = this.alternativesButtons();
+
         return(
             <Container>
                 <Header>
                     <Left>
-                        <Text>
+                        <Text style={style.timerText}>
                             {this.state.timer.timeLeft}
                         </Text>
                     </Left>
                         
-                    <Right>
-                        <Icon type='FontAwesome' name='plus-circle'/>
-                        <Icon type='MaterialCommunityIcons' name='table-row-remove'/>
-                        <Icon type='Ionicons' name='ios-help-buoy'/>
+                    <Right style={style.powerUPButtons}>
+                        <Icon style={style.itemPowerUPButton} type='MaterialCommunityIcons' name='restore-clock' />
+                        <Icon style={style.itemPowerUPButton} type='MaterialCommunityIcons' name='table-row-remove' />
+                        <Icon style={style.itemPowerUPButton} type='Ionicons' name='ios-help-buoy' />
                     </Right>
                 </Header>
 
                 <Content>
-                    <Card>
-                        <CardItem>
-                            <Card style={style.questionTextContainer}>
-                                <CardItem header>
-                                    <Left>
-                                        <Text>
-                                            {this.state.question === undefined ? "" : 
-                                                this.state.question!.getBibleSectionTestament()}
-                                        </Text>
-                                    </Left>
-                                    
-                                    <Right>
-                                        <Text>
-                                            {this.state.question === undefined ? "" : 
-                                                this.state.question!.getDificulty_string()}
-                                        </Text>
-                                    </Right>
-                                </CardItem>
+                    {this.state.question !== undefined && 
+                        <View style={style.containerQuestionInfo}>
+                            <QuestionInfo question={this.state.question!}/>
 
-                                <CardItem>
-                                    <Text style={style.questionText}>
-                                        {this.state.question === undefined ? "" : 
-                                            this.state.question!.getTextQuestion()}
-                                    </Text>
-                                </CardItem>
-
-                            </Card>
-                        </CardItem>
-
-                        <CardItem>
-                            <List>
-                                {this.alternativesButtons()}
-                            </List>
-                        </CardItem>
-                    </Card>
+                            <View style={style.containerAlternatives}>
+                                {alternativesButtons}
+                            </View>
+                        </View>
+                    }
                 </Content>
+
+                <AwesomeAlert
+                    show={this.state.alertInfo.showAlert}
+                    showProgress={false}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    onDismiss={() => {
+                        this.proceedNextQuestion()
+                    }}
+                    customView = {
+                        <View>
+                            {this.state.alertInfo.getIcon()}
+                            <Text style={style.alertInfoTitle}>{this.state.alertInfo.alertTitle}
+                                <Text style={{color: this.state.alertInfo.alertType === 'success' ? 'green' : 'red'}}>{this.state.alertInfo.score}</Text>
+                            </Text>
+                            
+                            <Text style={style.alertInfoMessage}>{this.state.alertInfo.alertMessage}</Text>
+                        </View>
+                    }
+                    />
+
+
             </Container>
         )
     }
@@ -276,8 +323,17 @@ class AlertInfo {
     alertMessage: string = '';
     alertType: 'success' | 'error' | undefined = undefined;
     showAlert: boolean = false;
+    score: string = '';
 
     constructor(){}
+
+    getIcon(){
+        return this.alertType === "success" ? (
+            <Icon style={style.correctAnswerIcon} type='MaterialCommunityIcons' name='check-circle-outline' />
+        ) : this.alertType === "error" ? (
+            <Icon style={style.incorretAnswerIcon} type='MaterialCommunityIcons' name='close-circle-outline' />
+        ) : undefined;
+    }
 }
 
 class Match {
