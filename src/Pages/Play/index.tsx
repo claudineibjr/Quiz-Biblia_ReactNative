@@ -14,20 +14,20 @@ import {Container, Header, Body, Left, Right, Content, Icon, Card, CardItem, Lis
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 // Model
-import Question, {QuestionFilter, QuestionDificulty, Testament, BibleSection} from '../../base/Model/Question';
-import User from '../../base/Model/User';
-import Bonus from '../../base/Model/UserBonus';
+import Question, {QuestionFilter, QuestionDificulty, Testament, BibleSection} from '../../Model/Question';
+import User from '../../Model/User';
+import Bonus from '../../Model/UserBonus';
 import Timer from './Timer';
 
 // Services
 import QuestionDB from '../../base/Services/Firebase/CloudFirestore/QuestionDB';
-import QuestionServices from '../../base/Services/QuestionServices';
+import QuestionServices from '../../Services/QuestionServices';
 
 // Components
 import QuestionInfo from '../../Components/QuestionComponent/QuestionInfo';
 
 // Utilities
-import { shuffleAlternatives } from "../../Utilities/Util";
+//import { shuffleAlternatives } from '../../Utilities/Utilities';
 import AlternativeItem from '../../Components/QuestionComponent/AlternativeItem';
 
 // Enums
