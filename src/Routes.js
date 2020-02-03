@@ -17,13 +17,13 @@ const Routes = createAppContainer(MainNavigator);
 
 export default Routes;*/
 
-import React, { Component } from 'react';
-import {View, Text} from 'react-native';
+import React, {Component} from 'react';
 
-import Play from './Pages/Play';
+//import Play from './Pages/Play';
+import MainLogin from './Pages/MainLogin';
 
-export default class Routes extends Component{
-    render(){
-        return <Play/>
-    }
+export default class Routes extends Component {
+  render() {
+    return <MainLogin />;
+  }
 }
