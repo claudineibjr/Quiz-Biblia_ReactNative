@@ -20,6 +20,7 @@ import { View, TextInput } from 'react-native';
 // Model
 
 // Services
+import UserServices from '../../Services/UserServices';
 
 // Icons
 
@@ -31,7 +32,8 @@ interface IProps {
 }
 
 interface IState {
-    
+    email: string,
+    password: string
 }
 
 class LoginRegister extends Component<IProps, IState> {
@@ -39,8 +41,24 @@ class LoginRegister extends Component<IProps, IState> {
         super(props);
 
         this.state = {
-            
+            email: '',
+            password: ''
         };
+    }
+
+    // Handlers
+    handleChangeEmail = (newEmail) => this.setState({email: newEmail});
+    handleChangePassword = (newPassword) => this.setState({password: newPassword});
+
+    handleLogin = async () => {
+        const filledFields = this.state.email.length > 0 && this.state.password.length > 0;
+        if (filledFields){
+            try{
+                const createdUser = await UserServices.loginUser(this.state.email, this.state.password);
+            } catch (error) {
+
+            }
+        }
     }
 
     render(){
@@ -52,6 +70,7 @@ class LoginRegister extends Component<IProps, IState> {
                         textContentType="emailAddress"
                         autoCapitalize='none'
                         keyboardType='email-address'
+                        onChangeText = {(newText) => this.handleChangeEmail(newText) }
                         autoCompleteType="email"/>
                 </Item>
 
@@ -61,6 +80,7 @@ class LoginRegister extends Component<IProps, IState> {
                         textContentType="password"
                         autoCapitalize='none'
                         secureTextEntry
+                        onChangeText = {(newText) => this.handleChangePassword(newText) }
                         autoCompleteType="password"/>
                 </Item>
 
@@ -71,7 +91,7 @@ class LoginRegister extends Component<IProps, IState> {
                 </Button>
                 
 
-                <Button block style={style.registerButtons}>
+                <Button block style={style.registerButtons} onPress={this.handleLogin}>
                     <Text style={style.buttonText}>
                         Entrar
                     </Text>

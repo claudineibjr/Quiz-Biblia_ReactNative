@@ -20,6 +20,7 @@ import { View, TextInput } from 'react-native';
 // Model
 
 // Services
+import UserServices from '../../Services/UserServices';
 
 // Icons
 
@@ -31,7 +32,9 @@ interface IProps {
 }
 
 interface IState {
-    
+    email: string,
+    name: string,
+    password: string
 }
 
 class RegisterComponent extends Component<IProps, IState> {
@@ -39,8 +42,26 @@ class RegisterComponent extends Component<IProps, IState> {
         super(props);
 
         this.state = {
-            
+            email: '',
+            name: '',
+            password: ''
         };
+    }
+
+    // Handlers
+    handleChangeEmail = (newEmail) => this.setState({email: newEmail});
+    handleChangeName = (newName) => this.setState({name: newName});
+    handleChangePassword = (newPassword) => this.setState({password: newPassword});
+
+    handleRegister = async () => {
+        const filledFields = this.state.email.length > 0 && this.state.name.length > 0 && this.state.password.length > 0;
+        if (filledFields){
+            try{
+                const createdUser = await UserServices.createUser(this.state.email, this.state.name, this.state.password);
+            } catch (error) {
+
+            }
+        }
     }
 
     render(){
@@ -49,18 +70,22 @@ class RegisterComponent extends Component<IProps, IState> {
                 <Item inlineLabel>
                     <Label>Nome</Label>
                     <Input
-                        textContentType="name"
+                        textContentType='name'
                         autoCapitalize='words'
-                        autoCompleteType="name"/>
+                        value={this.state.name}
+                        onChangeText = {(newText) => this.handleChangeName(newText) }
+                        autoCompleteType='name'/>
                 </Item>
 
                 <Item inlineLabel>
                     <Label>E-mail</Label>
                     <Input
-                        textContentType="emailAddress"
+                        textContentType='emailAddress'
                         autoCapitalize='none'
                         keyboardType='email-address'
-                        autoCompleteType="email"/>
+                        value={this.state.email}
+                        onChangeText = {(newText) => this.handleChangeEmail(newText) }
+                        autoCompleteType='email'/>
                 </Item>
 
                 <Item inlineLabel>
@@ -69,10 +94,12 @@ class RegisterComponent extends Component<IProps, IState> {
                         textContentType="password"
                         autoCapitalize='none'
                         secureTextEntry
-                        autoCompleteType="password"/>
+                        value={this.state.password}
+                        onChangeText = {(newText) => this.handleChangePassword(newText) }
+                        autoCompleteType='password'/>
                 </Item>
 
-                <Button block style={style.registerButtons}>
+                <Button block style={style.registerButtons} onPress={this.handleRegister}>
                     <Text style={style.buttonText}>
                         Cadastrar
                     </Text>

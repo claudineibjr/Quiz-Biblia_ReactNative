@@ -28,6 +28,4 @@ export default class User {
     addAnswered(questionNumber: number): void {
         this.answered.push(questionNumber);
     }
-
-
 }

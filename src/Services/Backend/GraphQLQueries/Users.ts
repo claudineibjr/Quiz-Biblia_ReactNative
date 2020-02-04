@@ -6,7 +6,8 @@ export enum UserQueries {
 	getUserByEmail = 'Q1',
 	getUserById = 'Q2',
 	getAllUsers = 'Q3',
-	createUser = 'M1'
+	createUser = 'M1',
+	loginUser = 'M2'
 }
 
 export default class GraphQLUser { 
@@ -66,6 +67,15 @@ export default class GraphQLUser {
 				query = gql`
 					mutation {
 						createUser(user: ${parameters.user}) {
+							${fields!.join(' ')}
+						}
+					}`;
+				break;
+			
+			case UserQueries.loginUser:
+				query = gql`
+					mutation {
+						loginUser(email: "${parameters.email}", password: "${parameters.password}"){
 							${fields!.join(' ')}
 						}
 					}`;
