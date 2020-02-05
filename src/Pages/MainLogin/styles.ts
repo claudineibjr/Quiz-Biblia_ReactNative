@@ -6,13 +6,13 @@ const style = StyleSheet.create({
         backgroundColor: colors.primary_s1,
     },
     
+    footerTab: {
+        backgroundColor: colors.primary_s2,
+    },
+
     footerTabText:{
         fontSize: fonts.small_1,
         color: colors.primary_w5
-    },
-
-    footerTab: {
-        backgroundColor: colors.primary_s2
     },
 
     selectedTab: {

@@ -12,17 +12,14 @@ import style from './styles';
 
 // Native-Base Components
 import {    Container, Text, Item, Input, Label,
-            Button, Content } from 'native-base';
+            Button } from 'native-base';
 
 // Components
-import { View, TextInput, Keyboard } from 'react-native';
-import LoadingComponent from '../LoadingComponent';
-import { Actions } from 'react-native-router-flux';
 
 // Model
 
 // Services
-import UserServices from '../../Services/UserServices';
+import { TypeRegister } from '../../Pages/MainLogin';
 
 // Icons
 
@@ -30,14 +27,14 @@ import UserServices from '../../Services/UserServices';
 
 // Interfaces
 interface IProps {
-    dispatch?: any
+    dispatch?: any,
+    handleMainButton: (typeRegister: TypeRegister, userInfo: {email: string, password: string, name?: string}) => void
 }
 
 interface IState {
     email: string,
     name: string,
-    password: string,
-    loading: boolean
+    password: string
 }
 
 class RegisterComponent extends Component<IProps, IState> {
@@ -47,8 +44,7 @@ class RegisterComponent extends Component<IProps, IState> {
         this.state = {
             email: '',
             name: '',
-            password: '',
-            loading: false
+            password: ''
         };
     }
 
@@ -57,26 +53,14 @@ class RegisterComponent extends Component<IProps, IState> {
     handleChangeName = (newName) => this.setState({name: newName});
     handleChangePassword = (newPassword) => this.setState({password: newPassword});
 
-    handleRegister = async () => {
-        const filledFields = this.state.email.length > 0 && this.state.name.length > 0 && this.state.password.length > 0;
-        if (filledFields){
-            Keyboard.dismiss();
-            this.setState({loading: true});
-
-            try{
-                const createdUser = await UserServices.createUser(this.state.email, this.state.name, this.state.password);
-                Actions.Play();
-            } catch (error) {
-
-            } finally {
-                this.setState({loading: false});
-            }
-        }
+    handleRegister = () => {
+        const{handleMainButton} = this.props;
+        handleMainButton(TypeRegister.REGISTER, {email: this.state.email, password: this.state.password, name: this.state.name});
     }
 
     render(){
         return(
-            <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
+            <Container style={style.mainContainer}>
                 <Item inlineLabel>
                     <Label style={style.label}>Nome</Label>
                     <Input
@@ -117,10 +101,6 @@ class RegisterComponent extends Component<IProps, IState> {
                         Cadastrar
                     </Text>
                 </Button>
-
-                {this.state.loading && 
-                    <LoadingComponent/>
-                }
 
             </Container>
         );

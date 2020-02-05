@@ -12,17 +12,14 @@ import style from './styles';
 
 // Native-Base Components
 import {    Container, Text, Item, Input, Label,
-            Button, Content } from 'native-base';
+            Button } from 'native-base';
 
 // Components
-import { View, TextInput, Keyboard } from 'react-native';
-import LoadingComponent from '../LoadingComponent';
-import { Actions } from 'react-native-router-flux';
+import { TypeRegister } from '../../Pages/MainLogin';
 
 // Model
 
 // Services
-import UserServices from '../../Services/UserServices';
 
 // Icons
 
@@ -30,13 +27,13 @@ import UserServices from '../../Services/UserServices';
 
 // Interfaces
 interface IProps {
-    dispatch?: any
+    dispatch?: any,
+    handleMainButton: (typeRegister: TypeRegister, userInfo: {email: string, password: string, name?: string}) => void
 }
 
 interface IState {
     email: string,
-    password: string,
-    loading: boolean
+    password: string
 }
 
 class LoginRegister extends Component<IProps, IState> {
@@ -45,8 +42,7 @@ class LoginRegister extends Component<IProps, IState> {
 
         this.state = {
             email: '',
-            password: '',
-            loading: false
+            password: ''
         };
     }
 
@@ -60,25 +56,13 @@ class LoginRegister extends Component<IProps, IState> {
     handleChangePassword = (newPassword) => this.setState({password: newPassword});
 
     handleLogin = async () => {
-        const filledFields = this.state.email.length > 0 && this.state.password.length > 0;
-        if (filledFields){
-            Keyboard.dismiss();
-            this.setState({loading: true});
-            
-            try{
-                const loggedUser = await UserServices.loginUser(this.state.email, this.state.password);
-                Actions.Play();
-            } catch (error) {
-                
-            } finally {
-                this.setState({loading: false});
-            }
-        }
+        const {handleMainButton} = this.props;
+        await handleMainButton(TypeRegister.LOGIN, {email: this.state.email, password: this.state.password});
     }
 
     render(){
         return(
-            <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
+            <Container style={style.mainContainer}>
                 <Item inlineLabel>
                     <Label style={style.label}>E-mail</Label>
                     <Input
@@ -113,10 +97,6 @@ class LoginRegister extends Component<IProps, IState> {
                         Entrar
                     </Text>
                 </Button>
-
-                {this.state.loading && 
-                    <LoadingComponent/>
-                }
 
             </Container>
         );

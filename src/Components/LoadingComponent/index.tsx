@@ -10,16 +10,18 @@ import { Spinner } from 'native-base';
 import styles from './styles';
 
 export interface Props {
-    
+    textColor: string,
+    spinnerColor: string,
+    textSize: number
 }
 
 const LoadingComponent = (props: Props) => (
     <View style={styles.container}>
-        <Text>Carregando...</Text>
+        <Text style={{color: props.textColor, fontSize: props.textSize}}>Carregando...</Text>
         <Spinner
-            color='#303F9F'
+            color={props.spinnerColor}
             size = 'large'/>
-    </View>    
+    </View>
 );
 
 export default LoadingComponent;

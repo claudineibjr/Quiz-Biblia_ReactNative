@@ -9,6 +9,7 @@ const style = StyleSheet.create({
         maxWidth: metrics.screenWidth * 0.95,
         display: 'flex',
         flex: 1,
+        flexDirection: 'column',
         borderRadius: metrics.baseRadius
     },
 
