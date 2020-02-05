@@ -153,6 +153,8 @@ export default class Play extends Component<IProps, IState>{
         this.state.alertInfo.score = messageScore;
         this.state.alertInfo.showAlert = true;
         this.forceUpdate();
+
+        new Timer(3, () => this.proceedNextQuestion(), () => {}, undefined, true);
     }
 
     proceedNextQuestion = () => {
@@ -260,6 +262,41 @@ export default class Play extends Component<IProps, IState>{
         return styleForAlternative;
     }
 
+    renderAwesomeAlertComponent = () => {
+        return (
+            <>
+                {this.state.alertInfo.showAlert && 
+                    <>
+                        <Text>{this.state.alertInfo.alertTitle}</Text>
+                        <Text>{this.state.alertInfo.score}</Text>
+                        <Text>{this.state.alertInfo.alertMessage}</Text>
+                    </>
+                }
+            </>
+        );
+        /*return (
+            <AwesomeAlert
+                show={this.state.alertInfo.showAlert}
+                showProgress={false}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                onDismiss={() => {
+                    this.proceedNextQuestion()
+                }}
+                customView = {
+                    <View>
+                        {this.state.alertInfo.getIcon()}
+                        <Text style={style.alertInfoTitle}>{this.state.alertInfo.alertTitle}
+                            <Text style={{color: this.state.alertInfo.alertType === 'success' ? 'green' : 'red'}}>{this.state.alertInfo.score}</Text>
+                        </Text>
+                        
+                        <Text style={style.alertInfoMessage}>{this.state.alertInfo.alertMessage}</Text>
+                    </View>
+                }
+                />
+        );*/
+    }
+
     render(){
         const alternativesButtons = this.alternativesButtons();
 
@@ -291,26 +328,7 @@ export default class Play extends Component<IProps, IState>{
                     }
                 </Content>
 
-                <AwesomeAlert
-                    show={this.state.alertInfo.showAlert}
-                    showProgress={false}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    onDismiss={() => {
-                        this.proceedNextQuestion()
-                    }}
-                    customView = {
-                        <View>
-                            {this.state.alertInfo.getIcon()}
-                            <Text style={style.alertInfoTitle}>{this.state.alertInfo.alertTitle}
-                                <Text style={{color: this.state.alertInfo.alertType === 'success' ? 'green' : 'red'}}>{this.state.alertInfo.score}</Text>
-                            </Text>
-                            
-                            <Text style={style.alertInfoMessage}>{this.state.alertInfo.alertMessage}</Text>
-                        </View>
-                    }
-                    />
-
+                {this.renderAwesomeAlertComponent()}
 
             </Container>
         )

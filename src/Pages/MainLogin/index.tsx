@@ -154,6 +154,14 @@ class MainLogin extends Component<IProps, IState> {
 
     renderAwesomeAlertComponent = () => {
         return (
+            <>
+                {this.state.alertInfo.showAlert && 
+                    <Text>Não foi possível realizar o login;</Text>
+                }
+            </>
+        );
+        
+        /*return (
             <AwesomeAlert
                 show={this.state.alertInfo.showAlert}
                 closeOnTouchOutside={true}
@@ -167,7 +175,7 @@ class MainLogin extends Component<IProps, IState> {
                         </Text>
                     </View>
                 }/>
-        );
+        );*/
     }
 
     render(){
