@@ -57,11 +57,15 @@ class MainLogin extends Component<IProps, IState> {
         switch(this.state.selectedTab){
             case Tab.LOGIN:
                 return (
-                    <LoginComponent/>
+                    <View style={style.childComponent}>
+                        <LoginComponent/>
+                    </View>
                 );
             case Tab.REGISTER:
                 return (
-                    <RegisterComponent/>
+                    <View style={style.childComponent}>
+                        <RegisterComponent/>
+                    </View>
                 );
         }
     }
@@ -73,7 +77,7 @@ class MainLogin extends Component<IProps, IState> {
 
     render(){
         return(
-            <Container>
+            <Container style={style.mainComponent}>
                 <Body>
                     {this.renderComponent()}
                 </Body>

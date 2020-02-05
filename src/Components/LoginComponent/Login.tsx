@@ -50,6 +50,11 @@ class LoginRegister extends Component<IProps, IState> {
         };
     }
 
+    // Components LifeCycle
+    componentDidMount = () => {
+        
+    }
+
     // Handlers
     handleChangeEmail = (newEmail) => this.setState({email: newEmail});
     handleChangePassword = (newPassword) => this.setState({password: newPassword});
@@ -64,7 +69,7 @@ class LoginRegister extends Component<IProps, IState> {
                 const loggedUser = await UserServices.loginUser(this.state.email, this.state.password);
                 Actions.Play();
             } catch (error) {
-
+                
             } finally {
                 this.setState({loading: false});
             }
@@ -75,21 +80,23 @@ class LoginRegister extends Component<IProps, IState> {
         return(
             <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
                 <Item inlineLabel>
-                    <Label>E-mail</Label>
+                    <Label style={style.label}>E-mail</Label>
                     <Input
                         textContentType="emailAddress"
                         autoCapitalize='none'
                         keyboardType='email-address'
+                        style={style.input}
                         onChangeText = {(newText) => this.handleChangeEmail(newText) }
                         autoCompleteType="email"/>
                 </Item>
 
                 <Item inlineLabel>
-                    <Label>Senha</Label>
+                    <Label style={style.label}>Senha</Label>
                     <Input
                         textContentType="password"
                         autoCapitalize='none'
                         secureTextEntry
+                        style={style.input}
                         onChangeText = {(newText) => this.handleChangePassword(newText) }
                         autoCompleteType="password"/>
                 </Item>

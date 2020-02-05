@@ -1,16 +1,20 @@
 import { StyleSheet } from 'react-native';
+import {colors, metrics, fonts} from '../../Styles';
 
 const style = StyleSheet.create({
     mainContainer: {
         padding: 20,
+        backgroundColor: colors.white,
+        maxHeight: metrics.screenHeight * 0.3,
+        maxWidth: metrics.screenWidth * 0.95,
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex: 1,
+        borderRadius: metrics.baseRadius
     },
 
     registerButtons: {
         marginTop: 16,
-        backgroundColor: '#303F9F'
+        backgroundColor: colors.secondary
     },
 
     forgetPasswordButton: {
@@ -19,11 +23,23 @@ const style = StyleSheet.create({
 
     forgetPasswordButtonText: {
         flex: 1,
-        textAlign: 'right'
+        textAlign: 'right',
+        color: colors.primary_s1
     },
     
     buttonText: {
-        fontSize: 18
+        fontSize: fonts.big_1
+    },
+
+    label: {
+        color: colors.secondary_w1,
+        fontSize: fonts.big_2,
+        fontWeight: 'bold'
+    },
+
+    input: {
+        color: colors.primary_s1,
+        fontSize: fonts.big_1
     }
 
 });

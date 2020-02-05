@@ -78,33 +78,36 @@ class RegisterComponent extends Component<IProps, IState> {
         return(
             <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
                 <Item inlineLabel>
-                    <Label>Nome</Label>
+                    <Label style={style.label}>Nome</Label>
                     <Input
                         textContentType='name'
                         autoCapitalize='words'
                         value={this.state.name}
+                        style={style.input}
                         onChangeText = {(newText) => this.handleChangeName(newText) }
                         autoCompleteType='name'/>
                 </Item>
 
                 <Item inlineLabel>
-                    <Label>E-mail</Label>
+                    <Label style={style.label}>E-mail</Label>
                     <Input
                         textContentType='emailAddress'
                         autoCapitalize='none'
                         keyboardType='email-address'
                         value={this.state.email}
+                        style={style.input}
                         onChangeText = {(newText) => this.handleChangeEmail(newText) }
                         autoCompleteType='email'/>
                 </Item>
 
                 <Item inlineLabel>
-                    <Label>Senha</Label>
+                    <Label style={style.label}>Senha</Label>
                     <Input
                         textContentType="password"
                         autoCapitalize='none'
                         secureTextEntry
                         value={this.state.password}
+                        style={style.input}
                         onChangeText = {(newText) => this.handleChangePassword(newText) }
                         autoCompleteType='password'/>
                 </Item>
