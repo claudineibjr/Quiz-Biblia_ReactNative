@@ -15,12 +15,15 @@ import style from './styles';
 import {colors, fonts} from '../../Styles';
 
 // Native-Base Components
-import {    Container, Body, Button, Footer, FooterTab, Text} from 'native-base';
+import {    Container, Body, Button, Footer, FooterTab, Text, Icon, Content} from 'native-base';
 
 // Components
 import LoginComponent from '../../Components/LoginComponent/Login';
 import RegisterComponent from '../../Components/LoginComponent/Register';
 import { Actions as RouterActions } from 'react-native-router-flux';
+
+// Awesome Alert
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 // Model
 import User from '../../Model/User';
@@ -45,7 +48,8 @@ interface IProps {
 
 interface IState {
     selectedTab: TypeRegister,
-    loading: boolean
+    loading: boolean,
+    alertInfo: AlertInfo
 }
 
 class MainLogin extends Component<IProps, IState> {
@@ -54,7 +58,8 @@ class MainLogin extends Component<IProps, IState> {
 
         this.state = {
             selectedTab: TypeRegister.LOGIN,
-            loading: false
+            loading: false,
+            alertInfo: new AlertInfo()
         };
     }
 
@@ -62,6 +67,10 @@ class MainLogin extends Component<IProps, IState> {
     switchTab = (tab: TypeRegister) => {
         if (tab !== this.state.selectedTab)
             this.setState({selectedTab: tab});
+    }
+
+    dismissAlert = () => {
+        this.setState({alertInfo: new AlertInfo()});
     }
 
     handleLogin = async (typeRegister: TypeRegister, userInfo: {email: string, password: string, name?: string}) => {
@@ -84,7 +93,12 @@ class MainLogin extends Component<IProps, IState> {
                 
                 RouterActions.Play();
             } catch (error) {
-                 
+                // Exibe o alerta com o erro
+                this.state.alertInfo.alertTitle = `Não foi possível realizar o ${typeRegister === TypeRegister.LOGIN ? 'login' : 'cadastro'}`;
+                //this.state.alertInfo.alertMessage = "Deu ruim";
+                this.state.alertInfo.showAlert = true;
+                console.log(error);
+                this.forceUpdate();
             } finally {
                 this.setState({loading: false});
             }
@@ -105,6 +119,8 @@ class MainLogin extends Component<IProps, IState> {
                     }
                 </View>
                 
+                {this.renderAwesomeAlertComponent()}
+
                 {this.state.loading &&
                     <LoadingComponent
                         spinnerColor = {colors.white}
@@ -115,12 +131,31 @@ class MainLogin extends Component<IProps, IState> {
         )
     }
 
+    renderAwesomeAlertComponent = () => {
+        return (
+            <AwesomeAlert
+                show={this.state.alertInfo.showAlert}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                onDismiss={() => this.dismissAlert()}
+                customView = {
+                    <View>
+                        <Icon style={style.alertInfoIcon} type='MaterialIcons' name='error-outline' />
+                        <Text style={style.alertInfoTitle}>
+                            {this.state.alertInfo.alertTitle}
+                        </Text>
+                    </View>
+                }/>
+        );
+    }
+
     render(){
         return(
             <Container style={style.mainComponent} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
                 <Body>
                     {this.renderComponent()}
                 </Body>
+
                 <Footer>
                     <FooterTab style={style.footerTab}>
                         <Button onPress={() => this.switchTab(TypeRegister.LOGIN)}>
@@ -128,6 +163,7 @@ class MainLogin extends Component<IProps, IState> {
                                 Entrar
                             </Text>
                         </Button>
+
                         <Button onPress={() => this.switchTab(TypeRegister.REGISTER)}>
                             <Text style={this.state.selectedTab === TypeRegister.REGISTER ? style.selectedTab : style.footerTabText}>
                                 Criar conta
@@ -135,8 +171,19 @@ class MainLogin extends Component<IProps, IState> {
                         </Button>
                     </FooterTab>
                 </Footer>
+
             </Container>
         );
+    }
+}
+
+class AlertInfo { 
+    alertTitle: string = '';
+    alertMessage: string = '';
+    showAlert: boolean = false;
+
+    constructor(){
+        
     }
 }
 

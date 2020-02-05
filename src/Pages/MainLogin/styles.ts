@@ -26,6 +26,22 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    alertInfoIcon: {
+        fontSize: 60,
+        textAlign: 'center',
+        color: colors.terciary_s1
+    },
+
+    alertInfoTitle: {
+        fontSize: 22,
+        textAlign: 'center'
+    },
+
+    alertInfoMessage: {
+        marginTop: 4,
+        fontSize: 16
     }
 });
 
