@@ -11,7 +11,7 @@ export default class UserServices {
             GraphQLUser.executeQuery(UserQueries.createUser, ["uid"], parameters).then((value) => {
                 resolve(value);
             }).catch((error) => {
-                console.error(error);
+                console.log(error);
                 reject(error);
             })
         });

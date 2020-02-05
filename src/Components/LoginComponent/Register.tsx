@@ -15,7 +15,8 @@ import {    Container, Text, Item, Input, Label,
             Button, Content } from 'native-base';
 
 // Components
-import { View, TextInput } from 'react-native';
+import { View, TextInput, Keyboard } from 'react-native';
+import LoadingComponent from '../LoadingComponent';
 
 // Model
 
@@ -34,7 +35,8 @@ interface IProps {
 interface IState {
     email: string,
     name: string,
-    password: string
+    password: string,
+    loading: boolean
 }
 
 class RegisterComponent extends Component<IProps, IState> {
@@ -44,7 +46,8 @@ class RegisterComponent extends Component<IProps, IState> {
         this.state = {
             email: '',
             name: '',
-            password: ''
+            password: '',
+            loading: false
         };
     }
 
@@ -56,17 +59,22 @@ class RegisterComponent extends Component<IProps, IState> {
     handleRegister = async () => {
         const filledFields = this.state.email.length > 0 && this.state.name.length > 0 && this.state.password.length > 0;
         if (filledFields){
+            Keyboard.dismiss();
+            this.setState({loading: true});
+
             try{
                 const createdUser = await UserServices.createUser(this.state.email, this.state.name, this.state.password);
             } catch (error) {
 
+            } finally {
+                this.setState({loading: false});
             }
         }
     }
 
     render(){
         return(
-            <Container style={style.mainContainer}>
+            <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
                 <Item inlineLabel>
                     <Label>Nome</Label>
                     <Input
@@ -104,6 +112,10 @@ class RegisterComponent extends Component<IProps, IState> {
                         Cadastrar
                     </Text>
                 </Button>
+
+                {this.state.loading && 
+                    <LoadingComponent/>
+                }
 
             </Container>
         );

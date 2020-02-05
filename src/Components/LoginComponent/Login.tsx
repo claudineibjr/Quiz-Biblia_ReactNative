@@ -15,7 +15,8 @@ import {    Container, Text, Item, Input, Label,
             Button, Content } from 'native-base';
 
 // Components
-import { View, TextInput } from 'react-native';
+import { View, TextInput, Keyboard } from 'react-native';
+import LoadingComponent from '../LoadingComponent';
 
 // Model
 
@@ -33,7 +34,8 @@ interface IProps {
 
 interface IState {
     email: string,
-    password: string
+    password: string,
+    loading: boolean
 }
 
 class LoginRegister extends Component<IProps, IState> {
@@ -42,7 +44,8 @@ class LoginRegister extends Component<IProps, IState> {
 
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            loading: false
         };
     }
 
@@ -53,17 +56,22 @@ class LoginRegister extends Component<IProps, IState> {
     handleLogin = async () => {
         const filledFields = this.state.email.length > 0 && this.state.password.length > 0;
         if (filledFields){
+            Keyboard.dismiss();
+            this.setState({loading: true});
+            
             try{
                 const createdUser = await UserServices.loginUser(this.state.email, this.state.password);
             } catch (error) {
 
+            } finally {
+                this.setState({loading: false});
             }
         }
     }
 
     render(){
         return(
-            <Container style={style.mainContainer}>
+            <Container style={style.mainContainer} pointerEvents = {this.state.loading ? 'none' : 'auto'}>
                 <Item inlineLabel>
                     <Label>E-mail</Label>
                     <Input
@@ -96,6 +104,10 @@ class LoginRegister extends Component<IProps, IState> {
                         Entrar
                     </Text>
                 </Button>
+
+                {this.state.loading && 
+                    <LoadingComponent/>
+                }
 
             </Container>
         );
