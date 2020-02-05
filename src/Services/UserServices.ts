@@ -27,8 +27,20 @@ export default class UserServices {
                 console.log(error);
                 reject(error);
             });
-        })
+        });
+    }
 
+    public static forgetPassword(email: string) {
+        const parameters = {email: email};
+
+        return new Promise<any>((resolve, reject) => {
+            GraphQLUser.executeQuery(UserQueries.forgetPassword, undefined, parameters).then((value) => {
+                resolve();
+            }).catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+        });
     }
 
 }

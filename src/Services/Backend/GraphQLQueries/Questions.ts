@@ -12,7 +12,7 @@ export default class GraphQLQuestion {
 
 	public static async executeQuery(queryType: QuestionQueries, fields?: Array<string>, parameters?: any): Promise<any>{
 		const query = this.getQuery(queryType, fields, parameters);
-		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'questions', fields, parameters);
+		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'questions');
 	}
 
 	private static getQuery(queryType: QuestionQueries, fields?: Array<string>, parameters?: any) {

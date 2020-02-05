@@ -16,6 +16,7 @@ import {    Container, Text, Item, Input, Label,
 
 // Components
 import { TypeRegister } from '../../Pages/MainLogin';
+import {Keyboard} from 'react-native';
 
 // Model
 
@@ -28,7 +29,8 @@ import { TypeRegister } from '../../Pages/MainLogin';
 // Interfaces
 interface IProps {
     dispatch?: any,
-    handleMainButton: (typeRegister: TypeRegister, userInfo: {email: string, password: string, name?: string}) => void
+    handleMainButton: (typeRegister: TypeRegister, userInfo: {email: string, password: string, name?: string}) => void,
+    handleForgetPassword: (email: string) => void
 }
 
 interface IState {
@@ -60,6 +62,11 @@ class LoginRegister extends Component<IProps, IState> {
         await handleMainButton(TypeRegister.LOGIN, {email: this.state.email, password: this.state.password});
     }
 
+    handleForgetPassword = async () => {
+        const {handleForgetPassword} = this.props;
+        await handleForgetPassword(this.state.email);
+    }
+
     render(){
         return(
             <Container style={style.mainContainer}>
@@ -85,7 +92,7 @@ class LoginRegister extends Component<IProps, IState> {
                         autoCompleteType="password"/>
                 </Item>
 
-                <Button transparent block style={style.forgetPasswordButton}>
+                <Button transparent block onPress={this.handleForgetPassword} style={style.forgetPasswordButton}>
                     <Text style={style.forgetPasswordButtonText}>
                         Esqueceu sua senha?
                     </Text>

@@ -22,7 +22,7 @@ export default class GraphQLClient {
 		return client;
 	}
 
-    public static async executeQuery(query: DocumentNode, queryType: string, endPoint: string, fields?: Array<string>, parameters?: any): Promise<any>{
+    public static async executeQuery(query: DocumentNode, queryType: string, endPoint: string): Promise<any>{
 		return new Promise<any>((resolve, reject) => {
 			const apolloServerClient = GraphQLClient.ApolloServerClient(endPoint);
 			if (queryType === 'Q'){

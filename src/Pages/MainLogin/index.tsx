@@ -105,13 +105,34 @@ class MainLogin extends Component<IProps, IState> {
         }
     }
 
+    handleForgetPassword = (email: string) => {
+        let filledFields = false;
+        filledFields = email.length > 0;
+        
+        if (filledFields){
+            Keyboard.dismiss();
+            this.setState({loading: true});
+
+            try {
+                UserServices.forgetPassword(email);
+            } catch (error) {
+
+            } finally {
+                this.setState({loading: false});
+            }
+
+        }
+    }
+
     // Rendering
     renderComponent = () => {
         return (
             <>
                 <View style={style.childComponent}>
                     {this.state.selectedTab === TypeRegister.LOGIN && 
-                        <LoginComponent handleMainButton={this.handleLogin}/>
+                        <LoginComponent
+                            handleMainButton={this.handleLogin}
+                            handleForgetPassword={this.handleForgetPassword}/>
                     }
 
                     {this.state.selectedTab === TypeRegister.REGISTER && 

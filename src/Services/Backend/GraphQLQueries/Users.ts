@@ -8,14 +8,15 @@ export enum UserQueries {
 	getUserById = 'Q2',
 	getAllUsers = 'Q3',
 	createUser = 'M1',
-	loginUser = 'M2'
+	loginUser = 'M2',
+	forgetPassword = 'M3'
 }
 
 export default class GraphQLUser { 
 
 	public static async executeQuery(queryType: UserQueries, fields?: Array<string>, parameters?: any): Promise<any>{
 		const query = this.getQuery(queryType, fields, parameters);
-		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'users', fields, parameters);
+		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'users');
 	}
 
 	private static getQuery(queryType: UserQueries, fields?: Array<string>, parameters?: any) {
@@ -64,6 +65,13 @@ export default class GraphQLUser {
 						loginUser(email: "${parameters.email}", password: "${parameters.password}"){
 							${fields!.join(' ')}
 						}
+					}`;
+				break;
+
+			case UserQueries.forgetPassword:
+				query = gql`
+					mutation{
+						forgetPassword(email: "${parameters.email}")
 					}`;
 				break;
 		}
