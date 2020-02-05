@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
+import { DocumentNode } from 'graphql';
 
 export default class GraphQLClient {
 	private static urlServer() {
@@ -19,5 +20,24 @@ export default class GraphQLClient {
 		});
 
 		return client;
+	}
+
+    public static async executeQuery(query: DocumentNode, queryType: string, endPoint: string, fields?: Array<string>, parameters?: any): Promise<any>{
+		return new Promise<any>((resolve, reject) => {
+			const apolloServerClient = GraphQLClient.ApolloServerClient(endPoint);
+			if (queryType === 'Q'){
+				apolloServerClient.query({query: query}).then((result) => {
+					resolve(result.data);
+				}).catch((error) => {
+					reject(error);
+				});
+			} else if (queryType === 'M'){
+				apolloServerClient.mutate({mutation: query}).then((result) => {
+					resolve(result.data);
+				}).catch((error) => {
+					reject(error);
+				});
+			}
+		});
 	}
 }

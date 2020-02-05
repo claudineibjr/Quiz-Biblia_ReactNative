@@ -80,19 +80,17 @@ export default class Play extends Component<IProps, IState>{
     }
 
     loadQuestion = () => {
-        //const questionFilter = new QuestionFilter(undefined, undefined, undefined)
-        //QuestionDB.getQuestion(this.state.user, questionFilter).then(question => {
-        //    this.state.timer.startTimer();
-        //    this.setState({question: question});
-        //}).catch(error => {
-        //    console.log(error);
-        //});
+        QuestionServices.getQuestion().then((question) => {
+            this.setState({question: question}, () => this.state.timer.startTimer());
+        }).catch((error) => {
+            console.log(error);
+        })
 
-        // Only for debug
-        this.setState({question: new Question('Complete a frase: O --- viverá pela fé. Nunca vi um --- mendigar o pão. Nem sua descendência perecer.', 0, ['justo', 'cristão que é chamado por Cristo para revelar as coisas de Jesus', 'Jesus', 'Diabo'], '\'O justo viverá pela fé\' Hc 2:4', QuestionDificulty.Easy, Testament.Velho, BibleSection.Profetas_Menores, 'Hc 2:4')},
-            () => {
-                this.state.timer.startTimer();
-            });
+        //// Only for debug
+        //this.setState({question: new Question('Complete a frase: O --- viverá pela fé. Nunca vi um --- mendigar o pão. Nem sua descendência perecer.', 0, ['justo', 'cristão que é chamado por Cristo para revelar as coisas de Jesus', 'Jesus', 'Diabo'], '\'O justo viverá pela fé\' Hc 2:4', QuestionDificulty.Easy, Testament.Velho, BibleSection.Profetas_Menores, 'Hc 2:4')},
+        //    () => {
+        //        this.state.timer.startTimer();
+        //    });
     }
 
     // #region Component LifeCycle
@@ -217,6 +215,7 @@ export default class Play extends Component<IProps, IState>{
 
         return alternatives.map((alternativeText, index) =>
             <AlternativeItem
+                key={index}
                 style={this.getStyleForAlternative(alreadyAnwered, index)}
                 onPress={() => this.try(index)} alternativeText={alternativeText}/>
         );
@@ -226,11 +225,11 @@ export default class Play extends Component<IProps, IState>{
         let styleForAlternative: any;
         
         const correctAlternative = {
-            backgroundColor: 'green'
+            backgroundColor: '#00ff00'
         };
 
         const incorrectAlternative = {
-            backgroundColor: 'red'
+            backgroundColor: '#ff0000'
         };
 
         const notAnsweredYet = {
@@ -272,7 +271,7 @@ export default class Play extends Component<IProps, IState>{
                             {this.state.timer.timeLeft}
                         </Text>
                     </Left>
-                        
+
                     <Right style={style.powerUPButtons}>
                         <Icon style={style.itemPowerUPButton} type='MaterialCommunityIcons' name='restore-clock' />
                         <Icon style={style.itemPowerUPButton} type='MaterialCommunityIcons' name='table-row-remove' />

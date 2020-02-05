@@ -1,5 +1,7 @@
 import Question, {QuestionDificulty} from "../Model/Question";
 
+import GraphQLQuestion, { QuestionQueries } from "./Backend/GraphQLQueries/Questions";
+
 enum QuestionDificultyPoints {
     Right_Hard = 15,
     Right_Medium = 10,
@@ -60,4 +62,19 @@ export default class QuestionServices{
 
         return score;
     }
+
+    public static getQuestion(){
+        const parameters = {userAnswered: '[]'};
+        return new Promise<any>((resolve, reject) => {
+            GraphQLQuestion.executeQuery(QuestionQueries.getQuestion , [], parameters).then((questionData) => {
+                const question = Question.getClassFromObject(questionData.getQuestion);
+                resolve(question);
+            }).catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+        })
+
+    }
+
 }

@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { DocumentNode } from 'graphql';
 
 import GraphQLClient from "../GraphQLClient";
 
@@ -11,29 +12,14 @@ export enum UserQueries {
 }
 
 export default class GraphQLUser { 
-    public static async executeQuery(queryType: UserQueries, fields?: Array<string>, parameters?: any): Promise<any>{
-		const query = this.getQuery(queryType, fields, parameters);
 
-		return new Promise<any>((resolve, reject) => {
-			const apolloServerClient = GraphQLClient.ApolloServerClient('users');
-			if (queryType[0].toUpperCase() === 'Q'){
-				apolloServerClient.query({query: query}).then((result) => {
-					resolve(result.data);
-				}).catch((error) => {
-					reject(error);
-				});
-			} else if (queryType[0].toUpperCase() === 'M'){
-				apolloServerClient.mutate({mutation: query}).then((result) => {
-					resolve(result.data);
-				}).catch((error) => {
-					reject(error);
-				});
-			}
-		});
+	public static async executeQuery(queryType: UserQueries, fields?: Array<string>, parameters?: any): Promise<any>{
+		const query = this.getQuery(queryType, fields, parameters);
+		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'users', fields, parameters);
 	}
 
 	private static getQuery(queryType: UserQueries, fields?: Array<string>, parameters?: any) {
-		let query;
+		let query: DocumentNode;
 
 		switch(queryType) {
 			case UserQueries.getUserByEmail:

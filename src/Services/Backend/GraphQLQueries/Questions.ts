@@ -1,34 +1,27 @@
 import gql from 'graphql-tag';
+import { DocumentNode } from 'graphql';
 
 import GraphQLClient from "../GraphQLClient";
 
 export enum QuestionQueries {
-	getQuestionById,
-	getQuestion
-}
-
-export enum QuestionMutations {
-	
+	getQuestionById = 'Q1',
+	getQuestion = 'Q2'
 }
 
 export default class GraphQLQuestion { 
+
 	public static async executeQuery(queryType: QuestionQueries, fields?: Array<string>, parameters?: any): Promise<any>{
 		const query = this.getQuery(queryType, fields, parameters);
-	
-		return new Promise<any>((resolve, reject) => {
-			GraphQLClient.ApolloServerClient('users').query({query: query}).then((result) => {
-				resolve(result.data);
-			}).catch((error) => {
-				reject(error);
-			});
-		});
+		return GraphQLClient.executeQuery(query, queryType[0].toUpperCase(), 'questions', fields, parameters);
 	}
 
-	private static getQuery(queryType: QuestionQueries | QuestionMutations, fields?: Array<string>, parameters?: any) {
-		let query;
+	private static getQuery(queryType: QuestionQueries, fields?: Array<string>, parameters?: any) {
+		let query: DocumentNode;
+
+		const fragmentText = this.getFragment(fields);
 
 		switch(queryType) {
-			case QuestionQueries.getQuestion:
+			case QuestionQueries.getQuestionById:
 				query = gql`
 					query{
 						getQuestionById(idQuestion: ${parameters.idQuestion}){
@@ -37,16 +30,39 @@ export default class GraphQLQuestion {
 					}`;
 				break;
 
-			case QuestionQueries.getQuestionById:
+			case QuestionQueries.getQuestion:
 				query = gql`
+					${fragmentText}
 					query{
-						getQuestion(userAnswered: ${parameters.userAnswered}, questionFilter: {dificulty: 1, testament: 1, bibleSection: 5}){
+						getQuestion(userAnswered: ${parameters.userAnswered}, questionFilter: {}){
 							${fields!.join(' ')}
+							${fragmentText.length > 0 ? "...FullQuestion" : ""}
 						}
 					}`;
 				break;
 		}
 
 		return query;
+	}
+
+	private static getFragment(fields?: Array<string>){
+		let fragmentText = '';
+		if (fields && fields!.length == 0){
+			fragmentText = `fragment FullQuestion on Question{
+				idQuestion
+				textQuestion
+				answer
+				alternatives
+				textBiblical
+				dificulty
+				testament
+				bibleSection
+				biblicalReference
+			}`;
+		}else{
+			fragmentText = '';
+		}
+
+		return fragmentText;
 	}
 }

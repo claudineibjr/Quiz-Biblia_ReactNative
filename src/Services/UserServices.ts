@@ -22,8 +22,6 @@ export default class UserServices {
 
         return new Promise<any>((resolve, reject) => {
             GraphQLUser.executeQuery(UserQueries.loginUser, ['uid'], parameters).then((value) => {
-                console.log('Logged successfully');
-                console.log(value);
                 resolve(value);
             }).catch((error) => {
                 console.log(error);
