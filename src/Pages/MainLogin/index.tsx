@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // React Native components
 import { View, Image } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 // Redux
 //import { connect } from 'react-redux';

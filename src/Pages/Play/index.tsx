@@ -6,6 +6,7 @@ import style from './styles';
 
 // React-Native components
 import { View, Text, Alert } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 // NativeBase
 import {Container, Header, Body, Left, Right, Content, Icon, Card, CardItem, ListItem, Button, List} from 'native-base';
@@ -20,7 +21,6 @@ import Bonus from '../../Model/UserBonus';
 import Timer from './Timer';
 
 // Services
-import QuestionDB from '../../base/Services/Firebase/CloudFirestore/QuestionDB';
 import QuestionServices from '../../Services/QuestionServices';
 
 // Components
@@ -80,19 +80,19 @@ export default class Play extends Component<IProps, IState>{
     }
 
     loadQuestion = () => {
-        const questionFilter = new QuestionFilter(undefined, undefined, undefined)
-        QuestionDB.getQuestion(this.state.user, questionFilter).then(question => {
-            this.state.timer.startTimer();
-            this.setState({question: question});
-        }).catch(error => {
-            console.log(error);
-        });
+        //const questionFilter = new QuestionFilter(undefined, undefined, undefined)
+        //QuestionDB.getQuestion(this.state.user, questionFilter).then(question => {
+        //    this.state.timer.startTimer();
+        //    this.setState({question: question});
+        //}).catch(error => {
+        //    console.log(error);
+        //});
 
         // Only for debug
-        /*this.setState({question: new Question('Complete a frase: O --- viverá pela fé. Nunca vi um --- mendigar o pão. Nem sua descendência perecer.', 0, ['justo', 'cristão que é chamado por Cristo para revelar as coisas de Jesus', 'Jesus', 'Diabo'], '\'O justo viverá pela fé\' Hc 2:4', QuestionDificulty.Easy, Testament.Velho, BibleSection.Profetas_Menores, 'Hc 2:4')},
+        this.setState({question: new Question('Complete a frase: O --- viverá pela fé. Nunca vi um --- mendigar o pão. Nem sua descendência perecer.', 0, ['justo', 'cristão que é chamado por Cristo para revelar as coisas de Jesus', 'Jesus', 'Diabo'], '\'O justo viverá pela fé\' Hc 2:4', QuestionDificulty.Easy, Testament.Velho, BibleSection.Profetas_Menores, 'Hc 2:4')},
             () => {
                 this.state.timer.startTimer();
-            });*/
+            });
     }
 
     // #region Component LifeCycle

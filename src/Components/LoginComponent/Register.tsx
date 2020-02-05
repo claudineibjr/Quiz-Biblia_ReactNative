@@ -17,6 +17,7 @@ import {    Container, Text, Item, Input, Label,
 // Components
 import { View, TextInput, Keyboard } from 'react-native';
 import LoadingComponent from '../LoadingComponent';
+import { Actions } from 'react-native-router-flux';
 
 // Model
 
@@ -64,6 +65,7 @@ class RegisterComponent extends Component<IProps, IState> {
 
             try{
                 const createdUser = await UserServices.createUser(this.state.email, this.state.name, this.state.password);
+                Actions.Play();
             } catch (error) {
 
             } finally {

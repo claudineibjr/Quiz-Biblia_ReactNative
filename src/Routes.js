@@ -1,29 +1,17 @@
-/*import React, { Component } from 'react';
-
-import {createStackNavigator, createAppContainer} from 'react-navigation';
-
-import HomeScreen from './Routes_example/HomeScreen';
-import ProfileScreen from './Routes_example/ProfileScreen';
-
-import LoginMain from "./Pages/LoginMain";
-import Main from "./Pages/Main";
-
-const MainNavigator = createStackNavigator({
-  LoginMain: {screen: LoginMain},
-  Main: {screen: Main},
-});
-
-const Routes = createAppContainer(MainNavigator);
-
-export default Routes;*/
-
 import React, {Component} from 'react';
 
-//import Play from './Pages/Play';
-import MainLogin from './Pages/MainLogin';
+import { Router, Scene, Stack } from 'react-native-router-flux';
 
-export default class Routes extends Component {
-  render() {
-    return <MainLogin />;
-  }
-}
+import MainLogin from './Pages/MainLogin';
+import Play from './Pages/Play';
+
+const Routes = () => (
+    <Router>
+        <Stack key = "root">
+            <Scene key = "MainLogin" hideNavBar component = {MainLogin} title = "Login" initial = {true} />
+            <Scene key = "Play" hideNavBar component = {Play} title = "Play"/>
+        </Stack>
+    </Router>
+);
+
+export default Routes;
